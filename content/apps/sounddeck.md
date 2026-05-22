@@ -40,8 +40,10 @@ SoundDeckは、MP3などの音声ファイルをすばやく再生し、マイ�
 - 環境によっては遅延やノイズが発生する場合があります。
 - 問題が発生した場合は、GitHubのIssueへ報告してください。
 
-## チェックサム確認
+## チェックサム確認（任意）
+
+SHA256は、ダウンロードしたファイルが壊れていないか、別のファイルに差し替わっていないかを確認するための値です。配布ページに正式なSHA256が載っている場合だけ照合してください。
 
 ```powershell
-Get-FileHash .\SoundDeck-0.1.0-beta-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\SoundDeck-0.1.1-win-x64-self-contained.zip -Algorithm SHA256
 ```

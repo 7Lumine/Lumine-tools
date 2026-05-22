@@ -1,4 +1,4 @@
-# Naru Tools distribution page
+# Lumine distribution page
 
 GitHub Pages向けの静的なアプリ配布ページです。
 
