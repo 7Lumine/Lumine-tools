@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apps - Lumine</title>
+  <meta name="description" content="個人開発ツールの配布ページです。">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body id="top" data-page="apps-list" data-base="../">
+  <header class="site-header">
+    <a class="brand" href="../apps/" aria-label="Lumine">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Lumine</span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../apps/" aria-current="page">Apps</a>
+      <a href="#">Notes</a>
+      <a class="external-link" href="https://github.com/7Lumine" target="_blank" rel="noopener noreferrer">
+        GitHub
+        <svg class="external-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 17L17 7M17 7H9M17 7V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="apps-top">
+      <div class="page-heading apps-heading">
+        <h1>Apps</h1>
+        <p>個人開発のデスクトップアプリを公開しています。</p>
+
+        <div class="filter-row" id="app-filters" aria-label="App filters">
+          <button class="filter-button is-active" type="button" data-filter="All">All</button>
+          <button class="filter-button" type="button" data-filter="Audio">Audio</button>
+          <button class="filter-button" type="button" data-filter="Utility">Utility</button>
+          <button class="filter-button" type="button" data-filter="Productivity">Productivity</button>
+          <button class="filter-button" type="button" data-filter="Game">Game</button>
+          <button class="filter-button" type="button" data-filter="Tool">Tool</button>
+          <button class="filter-button" type="button" data-filter="Beta">Beta</button>
+        </div>
+      </div>
+
+      <aside class="github-card" aria-label="GitHub">
+        <h2>
+          <span class="card-icon" aria-hidden="true">GH</span>
+          GitHub
+        </h2>
+        <p>すべてのアプリはGitHubで公開しています。</p>
+        <a class="external-link" href="https://github.com/7Lumine" target="_blank" rel="noopener noreferrer">
+          github.com/7Lumine
+          <svg class="external-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 17L17 7M17 7H9M17 7V15" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </aside>
+    </section>
+
+    <section class="apps-list" id="apps-list" aria-live="polite"></section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Lumine. All rights reserved.</p>
+    <nav aria-label="Footer navigation">
+      <a href="#">About</a>
+      <a href="#">Privacy</a>
+      <a href="#">License</a>
+    </nav>
+    <a class="top-button" href="#top" aria-label="ページトップへ戻る">↑</a>
+  </footer>
+
+  <script src="../assets/js/site.js" defer></script>
+</body>
+
+</html>
