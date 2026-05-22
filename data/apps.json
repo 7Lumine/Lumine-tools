@@ -8,20 +8,26 @@
       "description": "音声ファイルをすばやく再生・管理し、マイク音声とミックスしてVCへ送るツール",
       "status": "Beta",
       "featured": true,
-      "version": "0.1.0-beta",
+      "version": "0.1.1",
       "platform": "Windows 10 / 11",
-      "platforms": ["Windows 10 / 11"],
-      "fileName": "SoundDeck-0.1.0-beta-windows-x64.zip",
+      "platforms": [
+        "Windows 10 / 11"
+      ],
+      "fileName": "SoundDeck-0.1.1-win-x64-self-contained.zip",
       "fileSize": "42.8 MB",
-      "releaseDate": "2025-05-23",
+      "releaseDate": "2026-05-23",
       "license": "MIT License",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "tags": ["Audio", "Utility", "Windows"],
+      "tags": [
+        "Audio",
+        "Utility",
+        "Windows"
+      ],
       "icon": "public/images/apps/sounddeck/icon.png",
       "screenshot": "public/images/apps/sounddeck/screenshot.png",
       "pageUrl": "apps/sounddeck/",
       "detailUrl": "apps/sounddeck/",
-      "downloadUrl": "https://github.com/7Lumine/SoundDeck/releases/latest/download/SoundDeck-0.1.0-beta-windows-x64.zip",
+      "downloadUrl": "https://github.com/7Lumine/SoundDeck/releases/latest/download/SoundDeck-0.1.1-win-x64-self-contained.zip",
       "githubUrl": "https://github.com/7Lumine/SoundDeck",
       "releaseNotesUrl": "https://github.com/7Lumine/SoundDeck/releases/latest",
       "releasesUrl": "https://github.com/7Lumine/SoundDeck/releases/latest"
@@ -35,9 +41,16 @@
       "status": "Alpha",
       "version": "0.2.0-alpha",
       "platform": "Windows 10 / 11",
-      "platforms": ["Windows 10 / 11"],
+      "platforms": [
+        "Windows 10 / 11"
+      ],
       "releaseDate": "2025-05-10",
-      "tags": ["Utility", "Tool", "Windows", "Alpha"],
+      "tags": [
+        "Utility",
+        "Tool",
+        "Windows",
+        "Alpha"
+      ],
       "accent": "blue",
       "comingSoon": true,
       "detailUrl": "apps/app/?slug=another-tool",
@@ -52,9 +65,15 @@
       "status": "Stable",
       "version": "1.0.0",
       "platform": "Windows 10 / 11",
-      "platforms": ["Windows 10 / 11"],
+      "platforms": [
+        "Windows 10 / 11"
+      ],
       "releaseDate": "2025-04-01",
-      "tags": ["Game", "Windows", "Stable"],
+      "tags": [
+        "Game",
+        "Windows",
+        "Stable"
+      ],
       "accent": "purple",
       "comingSoon": true,
       "detailUrl": "apps/app/?slug=sample-app",

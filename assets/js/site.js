@@ -301,17 +301,13 @@
   async function initAppDetail() {
     const slug = document.body.dataset.slug || new URLSearchParams(window.location.search).get("slug");
     if (!slug) throw new Error("Missing app slug");
-    const [appData, markdown] = await Promise.all([
-      fetchJson("data/apps.json"),
-      fetchText(`content/apps/${slug}.md`)
-    ]);
+    const appData = await fetchJson("data/apps.json");
     const apps = normalizeApps(appData);
     const app = apps.find((item) => item.slug === slug || item.id === slug);
     if (!app) throw new Error(`App not found: ${slug}`);
 
-    const parsed = parseFrontmatter(markdown);
-    setText("app-title", parsed.data.title || app.name);
-    setText("app-summary", parsed.data.summary || app.summary);
+    setText("app-title", app.name);
+    setText("app-summary", displaySummary(app));
     setText("app-status", app.status || "App");
     setImage("app-icon", app.icon, "");
     setImage("app-screenshot", app.screenshot, `${app.name} screenshot`);
@@ -323,12 +319,22 @@
     tags.innerHTML = (app.tags || []).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
 
     document.getElementById("download-facts").innerHTML = renderDownloadFacts(app);
-    document.getElementById("markdown-content").innerHTML = renderMarkdown(parsed.body);
 
     const related = apps.filter((item) => item.slug !== slug).slice(0, 3);
     document.getElementById("related-apps").innerHTML = related.length
       ? related.map(appCard).join("")
       : '<p class="empty-note">他のアプリはまだありません。data/apps.jsonに追加するとここに表示されます。</p>';
+
+    try {
+      const markdown = await fetchText(`content/apps/${slug}.md`);
+      const parsed = parseFrontmatter(markdown);
+      setText("app-title", parsed.data.title || app.name);
+      setText("app-summary", parsed.data.summary || displaySummary(app));
+      document.getElementById("markdown-content").innerHTML = renderMarkdown(parsed.body);
+    } catch (error) {
+      console.warn(error);
+      document.getElementById("markdown-content").innerHTML = `<p>${escapeHtml(displaySummary(app))}</p>`;
+    }
   }
 
   async function init() {
