@@ -17,12 +17,69 @@
     return response.text();
   }
 
+  async function fetchExternalJson(url) {
+    const response = await fetch(url, {
+      cache: "no-cache",
+      headers: { Accept: "application/vnd.github+json" }
+    });
+    if (!response.ok) throw new Error(`Failed to load ${url}`);
+    return response.json();
+  }
+
   function normalizeApps(data) {
     return Array.isArray(data) ? data : data.apps || [];
   }
 
   function externalLinkIcon() {
     return '<svg class="external-link-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M17 7H9M17 7V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  function formatBytes(bytes) {
+    if (!Number.isFinite(bytes)) return "";
+    const units = ["B", "KB", "MB", "GB"];
+    let size = bytes;
+    let unit = 0;
+    while (size >= 1024 && unit < units.length - 1) {
+      size /= 1024;
+      unit += 1;
+    }
+    const decimals = unit === 0 || size >= 100 ? 0 : 1;
+    return `${size.toFixed(decimals)} ${units[unit]}`;
+  }
+
+  function selectReleaseAsset(app, release) {
+    const assets = release.assets || [];
+    if (!assets.length) return null;
+    if (!app.assetPattern) return assets[0];
+    return assets.find((assetItem) => assetItem.name.includes(app.assetPattern)) || assets[0];
+  }
+
+  async function syncReleaseInfo(app) {
+    if (!app.releaseRepo) return app;
+
+    try {
+      const release = await fetchExternalJson(`https://api.github.com/repos/${app.releaseRepo}/releases/latest`);
+      const assetItem = selectReleaseAsset(app, release);
+      const digest = assetItem?.digest || "";
+      const sha256 = digest.startsWith("sha256:") ? digest.slice(7) : digest;
+      const tagVersion = release.tag_name ? release.tag_name.replace(/^v/i, "") : "";
+
+      return {
+        ...app,
+        version: tagVersion || app.version,
+        fileName: assetItem?.name || app.fileName,
+        fileSize: assetItem?.size ? formatBytes(assetItem.size) : app.fileSize,
+        releaseDate: (release.published_at || release.created_at || "").slice(0, 10) || app.releaseDate,
+        sha256: sha256 || app.sha256,
+        downloadUrl: assetItem?.browser_download_url || app.downloadUrl,
+        githubUrl: app.githubUrl || `https://github.com/${app.releaseRepo}`,
+        releaseNotesUrl: release.html_url || app.releaseNotesUrl,
+        releasesUrl: release.html_url || app.releasesUrl
+      };
+    } catch (error) {
+      console.warn(error);
+      return app;
+    }
   }
 
   function escapeHtml(value) {
@@ -270,11 +327,13 @@
   }
 
   async function initAppsList() {
-    const apps = normalizeApps(await fetchJson("data/apps.json"));
+    let apps = normalizeApps(await fetchJson("data/apps.json"));
     const container = document.getElementById("apps-list");
     const filters = document.getElementById("app-filters");
+    let activeFilter = "All";
 
     function render(filter) {
+      activeFilter = filter;
       const filtered = filter === "All"
         ? apps
         : apps.filter((app) => {
@@ -296,6 +355,8 @@
     }
 
     render("All");
+    apps = await Promise.all(apps.map(syncReleaseInfo));
+    render(activeFilter);
   }
 
   async function initAppDetail() {
@@ -303,8 +364,9 @@
     if (!slug) throw new Error("Missing app slug");
     const appData = await fetchJson("data/apps.json");
     const apps = normalizeApps(appData);
-    const app = apps.find((item) => item.slug === slug || item.id === slug);
+    let app = apps.find((item) => item.slug === slug || item.id === slug);
     if (!app) throw new Error(`App not found: ${slug}`);
+    app = await syncReleaseInfo(app);
 
     setText("app-title", app.name);
     setText("app-summary", displaySummary(app));

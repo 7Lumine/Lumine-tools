@@ -26,6 +26,8 @@
       "screenshot": "public/images/apps/sounddeck/screenshot.png",
       "pageUrl": "apps/sounddeck/",
       "detailUrl": "apps/sounddeck/",
+      "releaseRepo": "7Lumine/SoundDeck",
+      "assetPattern": "win-x64-self-contained.zip",
       "downloadUrl": "https://github.com/7Lumine/SoundDeck/releases/latest/download/SoundDeck-0.1.1-win-x64-self-contained.zip",
       "githubUrl": "https://github.com/7Lumine/SoundDeck",
       "releaseNotesUrl": "https://github.com/7Lumine/SoundDeck/releases/latest",

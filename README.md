@@ -18,6 +18,17 @@ GitHub Pages向けの静的なアプリ配布ページです。
 
 専用URLが不要な場合は、`pageUrl` を省略すると `apps/app/?slug=<slug>` の汎用詳細ページで表示できます。
 
+## GitHub Releasesと同期する
+
+`data/apps.json` に `releaseRepo` と `assetPattern` を指定すると、ページ表示時にGitHub Releases APIから最新版のRelease情報を取得します。
+
+```json
+"releaseRepo": "7Lumine/SoundDeck",
+"assetPattern": "win-x64-self-contained.zip"
+```
+
+同期できる項目は、バージョン、リリース日、ファイル名、ファイルサイズ、ダウンロードURL、SHA256です。API取得に失敗した場合は、`apps.json` に書かれた値をそのまま使います。
+
 ## 直接ダウンロード
 
 `downloadUrl` にはGitHub Releasesのasset直リンクを指定します。最新版を常に指したい場合は `/releases/latest/download/<asset-name>` を使います。
