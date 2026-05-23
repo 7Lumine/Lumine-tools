@@ -47,6 +47,23 @@
     return `${size.toFixed(decimals)} ${units[unit]}`;
   }
 
+  function formatReleaseDate(isoDate) {
+    if (!isoDate) return "";
+    try {
+      const parts = new Intl.DateTimeFormat("ja-JP", {
+        timeZone: "Asia/Tokyo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(new Date(isoDate));
+      const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+      return `${values.year}-${values.month}-${values.day}`;
+    } catch (error) {
+      console.warn(error);
+      return isoDate.slice(0, 10);
+    }
+  }
+
   function selectReleaseAsset(app, release) {
     const assets = release.assets || [];
     if (!assets.length) return null;
@@ -69,7 +86,7 @@
         version: tagVersion || app.version,
         fileName: assetItem?.name || app.fileName,
         fileSize: assetItem?.size ? formatBytes(assetItem.size) : app.fileSize,
-        releaseDate: (release.published_at || release.created_at || "").slice(0, 10) || app.releaseDate,
+        releaseDate: formatReleaseDate(release.published_at || release.created_at) || app.releaseDate,
         sha256: sha256 || app.sha256,
         downloadUrl: assetItem?.browser_download_url || app.downloadUrl,
         githubUrl: app.githubUrl || `https://github.com/${app.releaseRepo}`,
@@ -80,6 +97,52 @@
       console.warn(error);
       return app;
     }
+  }
+
+  async function fetchReleaseHistory(app) {
+    if (!app.releaseRepo) return [];
+    try {
+      const releases = await fetchExternalJson(`https://api.github.com/repos/${app.releaseRepo}/releases?per_page=5`);
+      return Array.isArray(releases) ? releases : [];
+    } catch (error) {
+      console.warn(error);
+      return [];
+    }
+  }
+
+  function releaseBodySummary(body) {
+    const textValue = (body || "")
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/[#>*_`-]/g, "")
+      .replace(/\r?\n+/g, " ")
+      .trim();
+    if (!textValue) return "変更内容はGitHub Releasesで確認できます。";
+    return textValue.length > 150 ? `${textValue.slice(0, 150)}...` : textValue;
+  }
+
+  function renderReleaseHistory(app, releases) {
+    const section = document.getElementById("update-history-section");
+    const list = document.getElementById("release-history-list");
+    const allLink = document.getElementById("all-releases-link");
+    if (!section || !list || !releases.length) return;
+
+    list.innerHTML = releases.slice(0, 5).map((release) => `
+      <article class="release-history-item">
+        <div>
+          <h3>${escapeHtml(release.name || release.tag_name || "Release")}</h3>
+          <p>${escapeHtml(releaseBodySummary(release.body))}</p>
+        </div>
+        <div class="release-history-meta">
+          <time datetime="${escapeHtml(release.published_at || release.created_at || "")}">${escapeHtml(formatReleaseDate(release.published_at || release.created_at) || "-")}</time>
+          <a href="${escapeHtml(release.html_url || "#")}" target="_blank" rel="noopener noreferrer">Release ${externalLinkIcon()}</a>
+        </div>
+      </article>
+    `).join("");
+
+    if (allLink) {
+      allLink.href = app.releasesUrl || app.releaseNotesUrl || `https://github.com/${app.releaseRepo}/releases`;
+    }
+    section.hidden = false;
   }
 
   function escapeHtml(value) {
@@ -397,6 +460,8 @@
       console.warn(error);
       document.getElementById("markdown-content").innerHTML = `<p>${escapeHtml(displaySummary(app))}</p>`;
     }
+
+    renderReleaseHistory(app, await fetchReleaseHistory(app));
   }
 
   async function init() {
